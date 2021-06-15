@@ -2,10 +2,11 @@
 #include <vector>
 #include "Cubo.h"
 using namespace std;
-
+int contador_solucion=-1;
+string actual_animation="N";
 struct Rubik{
     vector<Cubo> cubos;
-    float animation_vel=1;
+    float animation_vel=0.3;
     float reg_grados=0,cant_fps;
 
     vector<Cubo*> U;
@@ -124,125 +125,226 @@ struct Rubik{
         }
         for(int i=0;i<27;++i){
             vector<float> new_eje_x=cubos[i].get_x_min_max_cara();
-            cout<<"cubo "<<i<<" : "<<new_eje_x[0]<<" = "<<new_eje_x[1]<<endl;
+            //cout<<"cubo "<<i<<" : "<<new_eje_x[0]<<" = "<<new_eje_x[1]<<endl;
             if(new_eje_x[1]>2.8){
                 R.push_back(&cubos[i]);
-                cout<<"cubo "<<i<<"-> R"<<endl;
+                //cout<<"cubo "<<i<<"-> R"<<endl;
             }
             if(new_eje_x[0]<-2.8){
                 L.push_back(&cubos[i]);
-                cout<<"cubo "<<i<<"-> L"<<endl;
+                //cout<<"cubo "<<i<<"-> L"<<endl;
             }
             
         }
         for(int i=0;i<27;++i){
             vector<float> new_eje_y=cubos[i].get_y_min_max_cara();
-            cout<<"cubo "<<i<<" : "<<new_eje_y[0]<<" ={"<<new_eje_y[1]<<"}"<<endl;
+            //cout<<"cubo "<<i<<" : "<<new_eje_y[0]<<" ={"<<new_eje_y[1]<<"}"<<endl;
             if(new_eje_y[1]>2.8){
-                cout<<"cubo "<<i<<"-> U"<<endl;
+                //cout<<"cubo "<<i<<"-> U"<<endl;
                 U.push_back(&cubos[i]);
             }
             if(new_eje_y[0]<-2.8){
-                cout<<"cubo "<<i<<"-> D"<<endl;
+                //cout<<"cubo "<<i<<"-> D"<<endl;
                 D.push_back(&cubos[i]);
             }
             
         }
         for(int i=0;i<27;++i){
             vector<float> new_eje_z=cubos[i].get_z_min_max_cara();
-            cout<<"cubo "<<i<<" : "<<new_eje_z[0]<<" = "<<new_eje_z[1]<<endl;
+            //cout<<"cubo "<<i<<" : "<<new_eje_z[0]<<" = "<<new_eje_z[1]<<endl;
             if(new_eje_z[1]>2.8){
-                cout<<"cubo "<<i<<"-> B"<<endl;
+                //cout<<"cubo "<<i<<"-> B"<<endl;
                 B.push_back(&cubos[i]);
             }
             if(new_eje_z[0]<-2.8){
-                cout<<"cubo "<<i<<"-> F"<<endl;
+                //cout<<"cubo "<<i<<"-> F"<<endl;
                 F.push_back(&cubos[i]);
             }
         }
     }
     //
-    char animation_F(){
-        if(reg_grados!=cant_fps){
+    string animation_F(int veces=1){
+        if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
-                F[i]->rotate_z(animation_vel);
+                F[i]->rotate_z(-animation_vel);
             }
             reg_grados++;
-            return 'F';
+            return "F";
         }
         reg_grados=0;
         actualizar_caras_pos();
-        print_eje();
-        return 'N';
+        //print_eje();
+        return "N";
     }
-    char animation_R(){
-        if(reg_grados!=cant_fps){
+    string animation_R(int veces=1){
+        if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 R[i]->rotate_x(animation_vel);
             }
             reg_grados++;
-            return 'R';
+            return "R";
         }
         reg_grados=0;
         actualizar_caras_pos();
-        print_eje();
-        return 'N';
+        //print_eje();
+        return "N";
     }
-    char animation_U(){
-        if(reg_grados!=cant_fps){
+    string animation_U(int veces=1){
+        if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 U[i]->rotate_y(animation_vel);
             }
             reg_grados++;
-            return 'U';
+            return "U";
         }
         reg_grados=0;
         actualizar_caras_pos();
-        print_eje();
-        return 'N';
+        //print_eje();
+        return "N";
     }
     ///
-    char animation_B(){
-        if(reg_grados!=cant_fps){
+    string animation_B(int veces=1){
+        if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 B[i]->rotate_z(animation_vel);
             }
             reg_grados++;
-            return 'B';
+            return "B";
         }
         reg_grados=0;
         actualizar_caras_pos();
-        print_eje();
-        return 'N';
+        //print_eje();
+        return "N";
     }
     ///
-    char animation_L(){
-        if(reg_grados!=cant_fps){
+    string animation_L(int veces=1){
+        if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
-                L[i]->rotate_x(animation_vel);
+                L[i]->rotate_x(-animation_vel);
             }
             reg_grados++;
-            return 'L';
+            return "L";
         }
         reg_grados=0;
         actualizar_caras_pos();
-        print_eje();
-        return 'N';
+        //print_eje();
+        return "N";
     }
     ///
-    char animation_D(){
-        if(reg_grados!=cant_fps){
+    string animation_D(int veces=1){
+        if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
-                D[i]->rotate_y(animation_vel);
+                D[i]->rotate_y(-animation_vel);
             }
             reg_grados++;
-            return 'D';
+            return "D";
         }
         reg_grados=0;
         actualizar_caras_pos();
-        print_eje();
-        return 'N';
+        //print_eje();
+        return "N";
     }
+    ///
+    string aplicar_solucion(vector<string> &xd){
+        
+        
+        if(actual_animation=="N"){
+            //cout<<"contador_solucion "<<contador_solucion<<endl;
+            contador_solucion++;
+            if(contador_solucion==(xd.size())){
+                contador_solucion=-1;
+                xd.clear();
+                return "N";
+            }
+            //cout<<"aplicando animacion->"<<xd[contador_solucion]<<"<-"<<endl;
+        }
+        
+        
+        
+        //cout<<"("<<contador_solucion<<")"<<endl;
+        actual_animation=xd[contador_solucion];
+        
+        //contador_solucion
+        if(actual_animation=="R"){
+            actual_animation=animation_R();
+            return "A";
+        }
+        if(actual_animation=="R2"){
+            actual_animation=animation_R(2);
+            return "A";
+        }
+        if(actual_animation=="R'"){
+            actual_animation=animation_R(3);
+            return "A";
+        }
+        //================================================
+        if(actual_animation=="U"){
+            actual_animation=animation_U();
+            return "A";
+        }
+        if(actual_animation=="U2"){
+            actual_animation=animation_U(2);
+            return "A";
+        }
+        if(actual_animation=="U'"){
+            actual_animation=animation_U(3);
+            return "A";
+        }
+        //================================================
+        if(actual_animation=="D"){
+            actual_animation=animation_D();
+            return "A";
+        }
+        if(actual_animation=="D2"){
+            actual_animation=animation_D(2);
+            return "A";
+        }
+        if(actual_animation=="D'"){
+            actual_animation=animation_D(3);
+            return "A";
+        }
+        //================================================
+        if(actual_animation=="F"){
+            actual_animation=animation_F();
+            return "A";
+        }
+        if(actual_animation=="F2"){
+            actual_animation=animation_F(2);
+            return "A";
+        }
+        if(actual_animation=="F'"){
+            actual_animation=animation_F(3);
+            return "A";
+        }
+        //================================================
+        if(actual_animation=="B"){
+            actual_animation=animation_B();
+            return "A";
+        }
+        if(actual_animation=="B2"){
+            actual_animation=animation_B(2);
+            return "A";
+        }
+        if(actual_animation=="B'"){
+            actual_animation=animation_B(3);
+            return "A";
+        }
+        //================================================
+        if(actual_animation=="L"){
+            actual_animation=animation_L();
+            return "A";
+        }
+        if(actual_animation=="L2"){
+            actual_animation=animation_L(2);
+            return "A";
+        }
+        if(actual_animation=="L'"){
+            actual_animation=animation_L(3);
+            return "A";
+        }
+        return "A";
+    }
+    ///
     void rotate_x(float grados){
         for(int i=0;i<27;++i){
             cubos[i].rotate_x(grados);

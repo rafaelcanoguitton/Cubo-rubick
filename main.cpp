@@ -3,6 +3,7 @@
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtc/type_ptr.hpp>
+#include <glm/gtx/euler_angles.hpp>
 #include <vector>
 #include <cmath>
 #include <iostream>
@@ -19,10 +20,10 @@ const char *vertexShaderSource ="#version 330 core\n"
     "layout (location = 0) in vec3 aPos;\n"
     "layout (location = 1) in vec3 aColor;\n"
     "out vec3 ourColor;\n"
-    "uniform mat4 transform;\n"
+    "uniform mat4 view;\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = vec4(aPos, 7.0);\n"
+    "   gl_Position = view* vec4(aPos, 7.0);\n"
     "   ourColor = aColor;\n"
     "}\0";
 
@@ -42,68 +43,112 @@ void framebuffer_size_callback(GLFWwindow* window, int width, int height){
 }
 // ---------------------------------------------------------------------------------------------------------
 ///////////VARIABLES
+float camera_pos_x=0.0f,camera_pos_y=0.0f,camera_pos_z=0.0f;
+glm::vec3 cameraPos   = glm::vec3(camera_pos_x,camera_pos_y,camera_pos_z);
+glm::vec3 cameraFront = glm::vec3(0.0f, 0.0f, -1.0f);
+glm::vec3 cameraUp    = glm::vec3(0.0f, 1.0f,  0.0f);
 
+float yaw = 0.0f;
+float pitch = 0;
+float cam_x=0,cam_y=0;
+float cameraSpeed =1.8; 
+string condition_input="N";
+vector<string> reg_mov;
+vector<string> solution_cubo;
 // ---------------------------------------------------------------------------------------------------------
 //OBJECTS
 Rubik c;
-int velocidad_plano=3;
-char condition_input='N';
+
 
 // ---------------------------------------------------------------------------------------------------------
 // process all input: query GLFW whether relevant keys are pressed/released this frame and react accordingly
 void processInput(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
         glfwSetWindowShouldClose(window, true);
-    if (glfwGetKey(window, GLFW_KEY_SPACE) == GLFW_PRESS){
-        c.animation_F();
-    }        
-    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
-        c.rotate_y(velocidad_plano);
-    }  
-    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
-        c.rotate_x(velocidad_plano);
-    }  
-    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
-        c.rotate_x(-velocidad_plano);
-    }  
-    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
-        c.rotate_y(-velocidad_plano);
-    }  
-    //////////////////////////////////////////////////////////////////////////////////////
-    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && condition_input=='N'){
-        //cout<<"INICIA ANIMACION R"<<endl;
-        condition_input='R';
-    }
-    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && condition_input=='N'){
-        //cout<<"INICIA ANIMACION L"<<endl;
-        condition_input='L';
-    }
-    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && condition_input=='N'){
-        //cout<<"INICIA ANIMACION U"<<endl;
-        condition_input='U';
-    }
-    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && condition_input=='N'){
-        //cout<<"INICIA ANIMACION D"<<endl;
-        condition_input='D';
-    }
-    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && condition_input=='N'){
-        //cout<<"INICIA ANIMACION F"<<endl;
-        condition_input='F';
-    }
-    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && condition_input=='N'){
-        //cout<<"INICIA ANIMACION B"<<endl;
-        condition_input='B';
-    }
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS){
+        /*
         std::string cubo= randomize();
         //string cubo="UUUDDDLR";
-        std::cout<<"Su cubo randomizado: "<<cubo<< endl;
-        //cubo.pro_rotation_y(-velocidad_plano);
+        std::cout<<"Su cubo randomizado:("<<cubo<<")"<< endl;
         vector<string> solution=get_solution(cubo);
-        std::cout<<"Solucion: "<<endl;
         for(int i=0;i<solution.size();i++){
-            std::cout<<solution[i]<<endl;
+            cout<<solution[i]<<endl;
         }
+        //cubo.pro_rotation_y(-velocidad_plano);
+        
+        
+        //if(reg_mov.size()!=0){
+            
+            
+            for(int i=0;i<reg_mov.size();++i){
+                cout<<reg_mov[i]<<" ";
+            }
+            cout<<endl;
+            */
+            //cout<<tempo<<endl;
+            //cout<<tempo.size()<<endl;
+            //
+            //std::cout<<"Solucion: "<<endl;
+            /*
+            for(int i=0;i<solution.size();i++){
+                cout<<solution[i]<<endl;
+            }
+            */
+       //}
+        condition_input="A";
+        string tempo=to_cube_not(reg_mov);
+        reg_mov.clear();
+        
+        solution_cubo=get_solution(tempo);
+        for(int i=0;i<solution_cubo.size();++i){
+                cout<<solution_cubo[i]<<" ";
+        }
+        cout<<endl;
+    }
+    
+    //////////////////////////////////////////////////////////////////////////////////////
+    if (glfwGetKey(window, GLFW_KEY_UP) == GLFW_PRESS){
+        pitch -= (cameraSpeed );
+    }
+    if (glfwGetKey(window, GLFW_KEY_DOWN) == GLFW_PRESS){
+        pitch += (cameraSpeed );
+    }
+    if (glfwGetKey(window, GLFW_KEY_LEFT) == GLFW_PRESS){
+        yaw += (cameraSpeed );
+    }
+    if (glfwGetKey(window, GLFW_KEY_RIGHT) == GLFW_PRESS){
+        yaw -= (cameraSpeed );
+    }
+    //////////////////////////////////////////////////////////////////////////////////////
+    if (glfwGetKey(window, GLFW_KEY_R) == GLFW_PRESS && condition_input=="N"){
+        reg_mov.push_back("R");
+        //cout<<"INICIA ANIMACION R"<<endl;
+        condition_input="R";
+    }
+    if (glfwGetKey(window, GLFW_KEY_L) == GLFW_PRESS && condition_input=="N"){
+        reg_mov.push_back("L");
+        //cout<<"INICIA ANIMACION L"<<endl;
+        condition_input="L";
+    }
+    if (glfwGetKey(window, GLFW_KEY_U) == GLFW_PRESS && condition_input=="N"){
+        reg_mov.push_back("U");
+        //cout<<"INICIA ANIMACION U"<<endl;
+        condition_input="U";
+    }
+    if (glfwGetKey(window, GLFW_KEY_D) == GLFW_PRESS && condition_input=="N"){
+        reg_mov.push_back("D");
+        //cout<<"INICIA ANIMACION D"<<endl;
+        condition_input="D";
+    }
+    if (glfwGetKey(window, GLFW_KEY_F) == GLFW_PRESS && condition_input=="N"){
+        reg_mov.push_back("F");
+        //cout<<"INICIA ANIMACION F"<<endl;
+        condition_input="F";
+    }
+    if (glfwGetKey(window, GLFW_KEY_B) == GLFW_PRESS && condition_input=="N"){
+        reg_mov.push_back("B");
+        //cout<<"INICIA ANIMACION B"<<endl;
+        condition_input="B";
     }
 }
 // ---------------------------------------------------------------------------------------------------------
@@ -196,25 +241,35 @@ int main(){
         glClearColor(0,0,0.2, 0.8);
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
-        if(condition_input=='R'){
+
+        glm::mat4 R = glm::yawPitchRoll(glm::radians(yaw), glm::radians(pitch), 0.0f);
+
+        cameraFront = glm::vec3(R * glm::vec4(0, 0, -1, 0));
+        cameraUp = glm::vec3(R * glm::vec4(0, 1, 0, 0));
+        glm::mat4 view = glm::lookAt(cameraPos, cameraPos + cameraFront, cameraUp);
+        glUniformMatrix4fv(glGetUniformLocation(shaderProgram, "view"), 1, GL_FALSE, glm::value_ptr(view));
+
+        if(condition_input=="R"){
             condition_input=c.animation_R();
         }
-        if(condition_input=='U'){
+        if(condition_input=="U"){
             condition_input=c.animation_U();
         }
-        if(condition_input=='D'){
+        if(condition_input=="D"){
             condition_input=c.animation_D();
         }
-        if(condition_input=='F'){
+        if(condition_input=="F"){
             condition_input=c.animation_F();
         }
-        if(condition_input=='B'){
+        if(condition_input=="B"){
             condition_input=c.animation_B();
         }
-        if(condition_input=='L'){
+        if(condition_input=="L"){
             condition_input=c.animation_L();
         }
-
+        if(condition_input=="A"){
+            condition_input=c.aplicar_solucion(solution_cubo);
+        }
 
         // Dibujar
         c.draw(window);
