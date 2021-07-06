@@ -20,8 +20,6 @@ ${DEPENDENCY_DIR}/include/freeglut
 )
 
 message( "\nBuild mode test is: ${CMAKE_BUILD_TYPE}" )
-# para copiar el asset
-#file(COPY "imagen.png" DESTINATION ${CMAKE_BINARY_DIR/src/cubo_01/})
 if ( CMAKE_BUILD_TYPE STREQUAL "Debug")
     message("\nOpenGL_GLUT_GLFW_Program -- Debug mode ****************")
 	link_directories(

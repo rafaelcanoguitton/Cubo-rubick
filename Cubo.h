@@ -5,48 +5,6 @@
 #include "Polygon.h"
 using namespace std;
 typedef vector<float> vec;
-/*
-void get_lados(vec &l1,vec &l2,vec &l3,vec &l4,vec A,vec B){
-    //cara del frente
-    l2.push_back(A[0]);l2.push_back(A[1]);l2.push_back(A[2]);
-    l2.push_back(A[0]);l2.push_back(B[1]);l2.push_back(A[2]);
-    l2.push_back(B[0]);l2.push_back(B[1]);l2.push_back(A[2]);
-    l2.push_back(B[0]);l2.push_back(A[1]);l2.push_back(A[2]);
-    //caras lados//derecho
-    l1.push_back(B[0]);l1.push_back(A[1]);l1.push_back(B[2]);
-    l1.push_back(B[0]);l1.push_back(B[1]);l1.push_back(B[2]);
-    l1.push_back(B[0]);l1.push_back(B[1]);l1.push_back(A[2]);
-    l1.push_back(B[0]);l1.push_back(A[1]);l1.push_back(A[2]);
-    //cara de atras
-    l3.push_back(A[0]);l3.push_back(A[1]);l3.push_back(B[2]);
-    l3.push_back(A[0]);l3.push_back(B[1]);l3.push_back(B[2]);
-    l3.push_back(B[0]);l3.push_back(B[1]);l3.push_back(B[2]);
-    l3.push_back(B[0]);l3.push_back(A[1]);l3.push_back(B[2]);
-    //caras lados//izquierdo
-    l4.push_back(A[0]);l4.push_back(A[1]);l4.push_back(A[2]);
-    l4.push_back(A[0]);l4.push_back(B[1]);l4.push_back(A[2]);
-    l4.push_back(A[0]);l4.push_back(B[1]);l4.push_back(B[2]);
-    l4.push_back(A[0]);l4.push_back(A[1]);l4.push_back(B[2]);
-}
-void get_tapa(vec &l5,vec &l6,vec A, vec B){
-    //Tapa
-    l5.push_back(B[0]);l5.push_back(B[1]);l5.push_back(A[2]);
-    l5.push_back(B[0]);l5.push_back(B[1]);l5.push_back(B[2]);
-    l5.push_back(A[0]);l5.push_back(B[1]);l5.push_back(B[2]);
-    l5.push_back(A[0]);l5.push_back(B[1]);l5.push_back(A[2]);
-    
-    
-    
-    //Base
-    l6.push_back(B[0]);l6.push_back(A[1]);l6.push_back(B[2]);  
-    l6.push_back(B[0]);l6.push_back(A[1]);l6.push_back(A[2]);
-    l6.push_back(A[0]);l6.push_back(A[1]);l6.push_back(A[2]);
-    l6.push_back(A[0]);l6.push_back(A[1]);l6.push_back(B[2]);
-    
-    
-         
-}
-*/
 void get_lados(vec &l1,vec &l2,vec &l3,vec &l4,vec A,vec B){
     //cara del frente, atras
     l1.push_back(B[0]);l1.push_back(A[1]);l1.push_back(A[2]);
@@ -63,9 +21,6 @@ void get_lados(vec &l1,vec &l2,vec &l3,vec &l4,vec A,vec B){
     l3.push_back(B[0]);l3.push_back(B[1]);l3.push_back(B[2]);
     l3.push_back(B[0]);l3.push_back(B[1]);l3.push_back(A[2]);
     l3.push_back(B[0]);l3.push_back(A[1]);l3.push_back(A[2]);
-    
-    
-    
     //caras lados//izquierdo
     l4.push_back(A[0]);l4.push_back(A[1]);l4.push_back(A[2]);
     l4.push_back(A[0]);l4.push_back(B[1]);l4.push_back(A[2]);
@@ -84,45 +39,6 @@ void get_tapa(vec &l5,vec &l6,vec A, vec B){
     l6.push_back(B[0]);l6.push_back(A[1]);l6.push_back(B[2]);
     l6.push_back(B[0]);l6.push_back(A[1]);l6.push_back(A[2]);
 }
-/*
-//---------------------------------------------
-void get_lados(vec &l1,vec &l2,vec &l3,vec &l4,vec A,vec B){
-    //cara del frente, atras
-    vec *ptr=&A;
-    vec *cara=&l1;
-    for(int i=0;i<2;++i){
-        cara->push_back(A[0]);cara->push_back(A[1]);cara->push_back((*ptr)[2]);
-        cara->push_back(A[0]);cara->push_back(B[1]);cara->push_back((*ptr)[2]);
-        cara->push_back(B[0]);cara->push_back(B[1]);cara->push_back((*ptr)[2]);
-        cara->push_back(B[0]);cara->push_back(A[1]);cara->push_back((*ptr)[2]);
-        ptr=&B;
-        cara=&l2;
-    }
-    //caras lados//derecho
-    l3.push_back(B[0]);l3.push_back(A[1]);l3.push_back(A[2]);
-    l3.push_back(B[0]);l3.push_back(B[1]);l3.push_back(A[2]);
-    l3.push_back(B[0]);l3.push_back(B[1]);l3.push_back(B[2]);
-    l3.push_back(B[0]);l3.push_back(A[1]);l3.push_back(B[2]);
-    //caras lados//izquierdo
-    l4.push_back(A[0]);l4.push_back(A[1]);l4.push_back(A[2]);
-    l4.push_back(A[0]);l4.push_back(B[1]);l4.push_back(A[2]);
-    l4.push_back(A[0]);l4.push_back(B[1]);l4.push_back(B[2]);
-    l4.push_back(A[0]);l4.push_back(A[1]);l4.push_back(B[2]);
-}
-void get_tapa(vec &l5,vec &l6,vec A, vec B){
-    //Tapa
-    l5.push_back(A[0]);l5.push_back(B[1]);l5.push_back(A[2]);
-    l5.push_back(B[0]);l5.push_back(B[1]);l5.push_back(A[2]);
-    l5.push_back(B[0]);l5.push_back(B[1]);l5.push_back(B[2]);
-    l5.push_back(A[0]);l5.push_back(B[1]);l5.push_back(B[2]);
-    //Base
-    l6.push_back(A[0]);l6.push_back(A[1]);l6.push_back(A[2]);
-    l6.push_back(B[0]);l6.push_back(A[1]);l6.push_back(A[2]);
-    l6.push_back(B[0]);l6.push_back(A[1]);l6.push_back(B[2]);
-    l6.push_back(A[0]);l6.push_back(A[1]);l6.push_back(B[2]);
-}
-*/
-
 struct Cubo{
     vector<Polygon> caras;
     vector<float> eje_x;
@@ -146,14 +62,6 @@ struct Cubo{
             Polygon *ptr_poly=new Polygon(cara[i],0.512,0.512,0.512);
             caras.push_back(*ptr_poly);
         }
-        /*
-        for (int w=0;w<cara[0].size();++w){
-            cout<<cara[4][w]<<endl;
-            if((w+1)%3==0){
-                cout<<"\n";
-            }
-        }
-        */
         actualizar_ejes();
         
     }

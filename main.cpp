@@ -216,7 +216,7 @@ int main(){
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);  
-    unsigned char *data = stbi_load("build/imagen.png", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("/home/rafxar/Gráfica - Backup/GLFW_GLAD_GLUT_GLEW_cmake_project/src/cubo_01/imagen.png", &width, &height, &nrChannels, 0);
     //unsigned char *data = stbi_load("/media/jhorel/DATA/Universidad/7mo semestre/grafica/texturas0/src/Tutorial_01/caras.png", &width, &height, &nrChannels, 0);
     if (data){   
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
