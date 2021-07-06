@@ -6,7 +6,7 @@ int contador_solucion=-1;
 string actual_animation="N";
 struct Rubik{
     vector<Cubo> cubos;
-    float animation_vel=0.3;
+    float animation_vel=0.1;
     float reg_grados=0,cant_fps;
 
     vector<Cubo*> U;
@@ -121,7 +121,7 @@ struct Rubik{
         for(int i=0;i<3;++i){
             int p_cubo=24+i;
             int p_t=12*i;
-            cout<<p_cubo<<" "<<p_cubo-9<<" "<<p_cubo-18<<endl;
+            //cout<<p_cubo<<" "<<p_cubo-9<<" "<<p_cubo-18<<endl;
             cubos[p_cubo].change_color_cara(5,1,1,1);
             cubos[p_cubo].change_textura_cara(5,tempo[p_t],tempo[p_t+1],tempo[p_t+2],tempo[p_t+3]);
             cubos[p_cubo-9].change_color_cara(5,1,1,1);
@@ -235,6 +235,11 @@ struct Rubik{
     }
     //
     string animation_F(int veces=1){
+        if(reg_grados==0){
+            for(int i=0;i<9;++i){
+                F[i]->trasladar(0,0,-1);
+            }
+        }
         if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 F[i]->rotate_z(-animation_vel);
@@ -243,11 +248,18 @@ struct Rubik{
             return "F";
         }
         reg_grados=0;
+        for(int i=0;i<9;++i)
+                F[i]->trasladar(0,0,1);
         actualizar_caras_pos();
         //print_eje();
         return "N";
     }
     string animation_R(int veces=1){
+        if(reg_grados==0){
+            for(int i=0;i<9;++i){
+                R[i]->trasladar(1,0,0);
+            }
+        }
         if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 R[i]->rotate_x(animation_vel);
@@ -256,11 +268,19 @@ struct Rubik{
             return "R";
         }
         reg_grados=0;
+        for(int i=0;i<9;++i){
+            R[i]->trasladar(-1,0,0);
+        }
         actualizar_caras_pos();
         //print_eje();
         return "N";
     }
     string animation_U(int veces=1){
+        if(reg_grados==0){
+            for(int i=0;i<9;++i){
+                U[i]->trasladar(0,1,0);
+            }
+        }
         if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 U[i]->rotate_y(animation_vel);
@@ -269,12 +289,19 @@ struct Rubik{
             return "U";
         }
         reg_grados=0;
+        for(int i=0;i<9;++i)
+                U[i]->trasladar(0,-1,0);
         actualizar_caras_pos();
         //print_eje();
         return "N";
     }
     ///
     string animation_B(int veces=1){
+        if(reg_grados==0){
+            for(int i=0;i<9;++i){
+                B[i]->trasladar(0,0,1);
+            }
+        }
         if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 B[i]->rotate_z(animation_vel);
@@ -283,12 +310,20 @@ struct Rubik{
             return "B";
         }
         reg_grados=0;
+        for(int i=0;i<9;++i){
+            B[i]->trasladar(0,0,-1);
+        }
         actualizar_caras_pos();
         //print_eje();
         return "N";
     }
     ///
     string animation_L(int veces=1){
+        if(reg_grados==0){
+            for(int i=0;i<9;++i){
+                L[i]->trasladar(-1,0,0);
+            }
+        }
         if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 L[i]->rotate_x(-animation_vel);
@@ -297,12 +332,19 @@ struct Rubik{
             return "L";
         }
         reg_grados=0;
+        for(int i=0;i<9;++i)
+                L[i]->trasladar(1,0,0);
         actualizar_caras_pos();
         //print_eje();
         return "N";
     }
     ///
     string animation_D(int veces=1){
+        if(reg_grados==0){
+            for(int i=0;i<9;++i){
+                D[i]->trasladar(0,-1,0);
+            }
+        }
         if(reg_grados!=cant_fps*veces){
             for(int i=0;i<9;++i){
                 D[i]->rotate_y(-animation_vel);
@@ -311,6 +353,8 @@ struct Rubik{
             return "D";
         }
         reg_grados=0;
+        for(int i=0;i<9;++i)
+                D[i]->trasladar(0,1,0);
         actualizar_caras_pos();
         //print_eje();
         return "N";
@@ -323,7 +367,7 @@ struct Rubik{
             if(contador_solucion==(sol.size())){
                 contador_solucion=-1;
                 sol.clear();
-                return "N";
+                return "E";
             }
             //cout<<"aplicando animacion->"<<xd[contador_solucion]<<"<-"<<endl;
         }

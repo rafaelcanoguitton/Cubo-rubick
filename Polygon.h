@@ -97,9 +97,13 @@ struct Polygon
         glBufferData(GL_ARRAY_BUFFER, size_bits_polygon, vertices.data(), GL_DYNAMIC_DRAW);
         glDrawArrays(GL_TRIANGLE_FAN, 0, vertices.size() / 8);
         //borders
-        glLineWidth(8);
-        glBufferData(GL_ARRAY_BUFFER, size_bits_polygon, vertices_borders.data(), GL_DYNAMIC_DRAW);
-        glDrawArrays(GL_LINE_LOOP, 0, vertices_borders.size() / 8);
+        if(wired==false){
+            glLineWidth(8);
+            glBufferData(GL_ARRAY_BUFFER, size_bits_polygon, vertices_borders.data(), GL_DYNAMIC_DRAW);
+            glDrawArrays(GL_LINE_LOOP, 0, vertices_borders.size()/8);   
+        }
+        
+            
     }
 
     void act_min_max_x()
@@ -170,13 +174,15 @@ struct Polygon
         act_min_max_z();
     }
     ///
-    void noob_translate(float new_x, float new_y)
-    {
-        for (int i = 0; i < points_size; i++)
-        {
-            int pos = i * 6;
-            vertices[pos] += new_x;
-            vertices[pos + 1] += new_y;
+    void noob_translate(float new_x,float new_y,float new_z){
+        for(int i=0;i<points_size;i++){
+            int pos=i*8;
+            vertices[pos]+=new_x;
+            vertices[pos+1]+=new_y;
+            vertices[pos+2]+=new_z;
+            vertices_borders[pos]+=new_x;
+            vertices_borders[pos+1]+=new_y;
+            vertices_borders[pos+2]+=new_z;
         }
     }
     void pro_traslate(vector<float> point)
@@ -187,6 +193,7 @@ struct Polygon
         m1.create_matrix_point(point);
         Multiply(m1, m2, m3);
         m3.export_to_vertex(vertices);
+        m3.export_to_vertex(vertices_borders);
     }
     ///
     void pro_shear_origin(float angle)
