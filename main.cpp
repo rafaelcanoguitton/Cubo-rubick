@@ -11,6 +11,7 @@
 #include "AllSolver/solve.h"
 #include "AllSolver/random.h"
 #include <iostream>
+//#include "Polygon.h"
 using namespace std;
 void framebuffer_size_callback(GLFWwindow* window, int width, int height);
 void processInput(GLFWwindow *window);
@@ -28,7 +29,7 @@ const char *vertexShaderSource ="#version 330 core\n"
     "uniform mat4 view;\n"
     "void main()\n"
     "{\n"
-    "   gl_Position = view * vec4(aPos, 6.0);\n"
+    "   gl_Position = view * vec4(aPos, 8.0);\n"
     "   //gl_Position = view * vec4(aPos, 1.0);\n"
     "   ourColor = aColor;\n"
     "   TexCoord = aTexCoord;\n"
@@ -58,9 +59,77 @@ float cameraSpeed =1.8;
 string condition_input="N";
 vector<string> reg_mov;
 vector<string> solution_cubo;
-///
+///Objetos
+//--------Estrella y animacion
+struct estrella{
+    float velocidad_animacion=0.003;
+    int reg_movimientos=0;
+    string estado_estrella="M";
+    
+    vector <float> vertices_estrella{
+        -0.218,0.5,0,
+        0,1,0,
+        0.218,0.5,0,
+        1,0.5,0,
+        0.395,0.107,0,
+        0.697,-0.6,0,
+        0,-0.148,0,
+        -0.697,-0.6,0,
+        -0.395,0.107,0,
+        -1,0.5,0
+    };
+    Polygon* pol_estrella;
+    estrella(){
+        pol_estrella=new Polygon(this->vertices_estrella,1,1,0);
+    }
+    //----------------------------------
+    string animacion_estrella(int pos_negativo, string eje){
+        if(estado_estrella=="M"){
+            //if(reg_movimientos!=2700){//0.002
+            if(reg_movimientos!=2000){
+                pol_estrella->noob_translate(0,velocidad_animacion,0);
+                reg_movimientos+=1;
+                return "M";
+            }
+            reg_movimientos=0;
+            velocidad_animacion=0.03;
+            return "G";
+        }
+        if(estado_estrella=="G"){
+            if(reg_movimientos<3000){
+                if(eje=="X"){
+                    pol_estrella->pro_rotation_x(pos_negativo * velocidad_animacion);
+                }
+                if(eje=="Z"){
+                    pol_estrella->pro_rotation_z(pos_negativo * velocidad_animacion);
+                }
+                reg_movimientos+=1;
+                return "G";
+            }
+            reg_movimientos=0;
+            velocidad_animacion=0.003;
+            return "B";
+        }
+        if(estado_estrella=="B"){
+            if(reg_movimientos!=2000){
+                pol_estrella->noob_translate(0,-velocidad_animacion,0);
+                reg_movimientos+=1;
+                return "B";
+            }
+            return "N";
+        }
+    }
+    void draw(GLFWwindow* window,bool wired=false){
+        pol_estrella->draw(window,wired);
+    }
+};
+int pos_vect_estrellas=0;
 
+
+vector<estrella*> estrellas;
+//Polygon estrella(vertices_estrella,1,1,0);
 Rubik c;
+
 ///-------------------------------------------------------------
 void processInput(GLFWwindow* window, int key, int scancode, int action, int mods){
     if (glfwGetKey(window, GLFW_KEY_ESCAPE) == GLFW_PRESS)
@@ -109,20 +178,30 @@ void processInput(GLFWwindow* window, int key, int scancode, int action, int mod
         //cout<<"INICIA ANIMACION B"<<endl;
         condition_input="B";
     }
+    if (glfwGetKey(window, GLFW_KEY_E) == GLFW_PRESS && condition_input=="N"){
+        //cout<<"INICIA ANIMACION B"<<endl;
+        //condition_input="E";
+    }
     if (glfwGetKey(window, GLFW_KEY_K) == GLFW_PRESS && condition_input=="N"){
+		
         condition_input="A";
         string tempo=to_cube_not(reg_mov);
         reg_mov.clear();
+        
         solution_cubo=get_solution(tempo);
-        for(int i=0;i<solution_cubo.size();++i){
-                cout<<solution_cubo[i]<<" ";
-        }
+        //for(int i=0;i<solution_cubo.size();++i){
+          //      cout<<solution_cubo[i]<<" ";
+        //}
         cout<<endl;
     }
 }
 //--------------------------------------------------------------
 int main(){
-    
+    estrellas.reserve(12);
+    for(int i=0;i<12;++i){
+        estrella *estrellas_point=new estrella;
+        estrellas.push_back(estrellas_point);
+    }
     // glfw: initialize and configure
     // ------------------------------
     glfwInit();
@@ -216,7 +295,7 @@ int main(){
     // load image, create texture and generate mipmaps
     int width, height, nrChannels;
     stbi_set_flip_vertically_on_load(true);  
-    unsigned char *data = stbi_load("build/imagen.png", &width, &height, &nrChannels, 0);
+    unsigned char *data = stbi_load("/media/jhorel/DATA/Universidad/7mo semestre/grafica/texturas0/src/Tutorial_01/imagen.png", &width, &height, &nrChannels, 0);
     //unsigned char *data = stbi_load("/media/jhorel/DATA/Universidad/7mo semestre/grafica/texturas0/src/Tutorial_01/caras.png", &width, &height, &nrChannels, 0);
     if (data){   
         glTexImage2D(GL_TEXTURE_2D, 0, GL_RGB, width, height, 0, GL_RGB, GL_UNSIGNED_BYTE, data);
@@ -227,12 +306,20 @@ int main(){
     stbi_image_free(data);
     glBindTexture(GL_TEXTURE_2D, texture);
     
-    //p.change_color_cara(0,1,0,0);
-    
-    // render loop
+    //menu
+    cout<<"Girar en sentido horario"<<endl;
+    cout<<"Con la tecla U la cara UP"<<endl;
+    cout<<"Con la tecla D la cara DOWN"<<endl;
+    cout<<"Con la tecla L la cara LEFT"<<endl;
+    cout<<"Con la tecla R la cara RIGHT"<<endl;
+    cout<<"Con la tecla F la cara FRONT"<<endl;
+    cout<<"Con la tecla B la cara BACK"<<endl;
+    cout<<"---------------------------------"<<endl;
+    cout<<"Se puede mover la camara con las flechas direccionales"<<endl;
+    cout<<"---------------------------------"<<endl;
+    cout<<"Con la tecla K Se resolvera el cubo"<<endl;
     // -----------
-    while (!glfwWindowShouldClose(window))
-    {
+    while (!glfwWindowShouldClose(window)){
         // input
         // -----
         glfwSetKeyCallback(window, processInput);
@@ -270,8 +357,31 @@ int main(){
         if(condition_input=="A"){
             condition_input=c.aplicar_solucion(solution_cubo);
         }
+        if(condition_input=="E"){
+            estrellas[pos_vect_estrellas]->estado_estrella=estrellas[pos_vect_estrellas]->animacion_estrella(1,"X");
+            estrellas[pos_vect_estrellas+1]->estado_estrella=estrellas[pos_vect_estrellas+1]->animacion_estrella(-1,"X");
+            estrellas[pos_vect_estrellas+2]->estado_estrella=estrellas[pos_vect_estrellas+2]->animacion_estrella(1,"Z");
+            estrellas[pos_vect_estrellas+3]->estado_estrella=estrellas[pos_vect_estrellas+3]->animacion_estrella(-1,"Z");
+            if(estrellas[pos_vect_estrellas]->estado_estrella=="N"){
+                if(pos_vect_estrellas==8){
+                    estrellas.clear();
+                    for(int i=0;i<12;++i){
+                       estrella *estrellas_point=new estrella;
+                        estrellas.push_back(estrellas_point);
+                    }
+                    pos_vect_estrellas=0;
+                    condition_input="N";
+                }
+                else 
+                    pos_vect_estrellas+=4;
+            }
+        }
         //glDrawArrays(GL_TRIANGLE_FAN, 0, 4);   
         c.draw(window);
+        for(int i=0;i<12;++i){
+            estrellas[i]->draw(window);
+        }
+        
         // -------------------------------------------------------------------------------
         glfwSwapBuffers(window);
         glfwPollEvents();

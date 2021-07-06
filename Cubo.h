@@ -228,6 +228,12 @@ struct Cubo{
         }
     }
     ///
+    void trasladar(float x,float y, float z){
+        for(int i=0;i<6;++i){
+            caras[i].noob_translate(x,y,z);
+        }
+    }
+    ///
     void rotate_y(float velocity){
         for(int i=0;i<6;++i){
             caras[i].pro_rotation_y(velocity);
